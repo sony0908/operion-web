@@ -330,7 +330,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
       <div className="relative group">
         <div
           onClick={() => setIsSidebarOpen(true)}
-          className="bg-[#131418] border border-white/[0.06] hover:border-white/[0.12] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] cursor-pointer transition active:scale-[0.99] relative overflow-hidden"
+          className="bg-[#131418]/60 backdrop-blur-md border border-white/[0.07] hover:border-white/[0.12] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] cursor-pointer transition active:scale-[0.99] relative overflow-hidden"
         >
           {/* Barra superior de la ventana: 3 micro-dots de navegador y pill de repositorio */}
           <div className="flex items-center justify-between pb-3 mb-2 border-b border-white/[0.04]">
@@ -360,11 +360,6 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
                 {selectedProject?.purpose || 'Centro de control de arquitectura y tareas'}
               </p>
             </div>
-
-            {/* Isotipo tenue en la esquina derecha del recuadro */}
-            <div className="w-12 h-12 opacity-20 flex-shrink-0 -mr-1 -mt-1 pointer-events-none">
-              <img src="/operion-logo.png" alt="" className="w-full h-full object-contain filter contrast-125" />
-            </div>
           </div>
         </div>
       </div>
@@ -392,7 +387,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
       {/* ========================================================= */}
       {/* RECUADRO 2 (STEP 2): CUADERNO & LOS RECUADROS PEQUEÑOS    */}
       {/* ========================================================= */}
-      <div className="bg-[#131418] border border-white/[0.06] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] relative overflow-hidden space-y-3.5">
+      <div className="bg-[#131418]/60 backdrop-blur-md border border-white/[0.07] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] relative overflow-hidden space-y-3.5">
         
         {/* Cabecera Step 2 */}
         <div className="space-y-0.5">
@@ -414,8 +409,8 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
             onClick={() => setNewNoteType('idea')}
             className={`p-2.5 sm:p-3 rounded-xl border cursor-pointer transition flex items-center justify-between ${
               newNoteType === 'idea'
-                ? 'border-[#e58a5b] bg-[#e58a5b]/[0.08] shadow-[0_0_12px_rgba(229,138,91,0.2)]'
-                : 'border-white/[0.06] bg-[#0c0d10] hover:border-white/10 text-zinc-400'
+                ? 'border-[#e58a5b] bg-[#e58a5b]/10 backdrop-blur-sm shadow-[0_0_12px_rgba(229,138,91,0.2)]'
+                : 'border-white/[0.06] bg-[#0c0d10]/50 backdrop-blur-sm hover:border-white/10 text-zinc-400'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -434,8 +429,8 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
             onClick={() => setNewNoteType('fix')}
             className={`p-2.5 sm:p-3 rounded-xl border cursor-pointer transition flex items-center justify-between ${
               newNoteType === 'fix'
-                ? 'border-[#e58a5b] bg-[#e58a5b]/[0.08] shadow-[0_0_12px_rgba(229,138,91,0.2)]'
-                : 'border-white/[0.06] bg-[#0c0d10] hover:border-white/10 text-zinc-400'
+                ? 'border-[#e58a5b] bg-[#e58a5b]/10 backdrop-blur-sm shadow-[0_0_12px_rgba(229,138,91,0.2)]'
+                : 'border-white/[0.06] bg-[#0c0d10]/50 backdrop-blur-sm hover:border-white/10 text-zinc-400'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -454,8 +449,8 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
             onClick={() => setNewNoteType('note')}
             className={`p-2.5 sm:p-3 rounded-xl border cursor-pointer transition flex items-center justify-between ${
               newNoteType === 'note'
-                ? 'border-[#e58a5b] bg-[#e58a5b]/[0.08] shadow-[0_0_12px_rgba(229,138,91,0.2)]'
-                : 'border-white/[0.06] bg-[#0c0d10] hover:border-white/10 text-zinc-400'
+                ? 'border-[#e58a5b] bg-[#e58a5b]/10 backdrop-blur-sm shadow-[0_0_12px_rgba(229,138,91,0.2)]'
+                : 'border-white/[0.06] bg-[#0c0d10]/50 backdrop-blur-sm hover:border-white/10 text-zinc-400'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -472,7 +467,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
 
         {/* Formulario de entrada de texto */}
         <form onSubmit={handleAddNote} className="space-y-3 pt-1">
-          <div className="bg-[#0c0d10] border border-white/[0.06] focus-within:border-[#e58a5b]/70 focus-within:ring-1 focus-within:ring-[#e58a5b]/20 rounded-xl p-3 transition shadow-inner">
+          <div className="bg-[#0c0d10]/50 backdrop-blur-sm border border-white/[0.06] focus-within:border-[#e58a5b]/70 focus-within:ring-1 focus-within:ring-[#e58a5b]/20 rounded-xl p-3 transition shadow-inner">
             <textarea
               required
               value={newNoteContent}
@@ -525,7 +520,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
       {/* ========================================================= */}
       {/* RECUADRO 3 (STEP 3): DIAGNÓSTICO & ENTREGABLES            */}
       {/* ========================================================= */}
-      <div className="bg-[#131418] border border-white/[0.06] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] relative overflow-hidden space-y-4">
+      <div className="bg-[#131418]/60 backdrop-blur-md border border-white/[0.07] rounded-2xl p-4 sm:p-5 shadow-[0_16px_36px_rgba(0,0,0,0.6)] relative overflow-hidden space-y-4">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.04] pb-3">
           <div className="space-y-0.5">
@@ -577,7 +572,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
         </div>
 
         {/* CTA RITUAL DE DIAGNÓSTICO AUTÓNOMO (Como 'See Your Ritual ->') */}
-        <div className="p-3 bg-[#0c0d10] border border-white/[0.04] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-3 bg-[#0c0d10]/50 backdrop-blur-sm border border-white/[0.04] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
             <span className="text-xs font-medium text-zinc-200 block">
               {analysisResult ? 'Diagnóstico IA actualizado' : 'Auditoría autónoma pendiente'}
@@ -604,7 +599,7 @@ ${projectTasks.map((t) => `- [${t.status === 'done' ? 'x' : ' '}] ${t.title} (${
             {notes.map((note) => (
               <div
                 key={note.id}
-                className="bg-[#0c0d10] border border-white/[0.06] rounded-xl p-3.5 space-y-2 text-left"
+                className="bg-[#0c0d10]/50 backdrop-blur-sm border border-white/[0.05] rounded-xl p-3.5 space-y-2 text-left"
               >
                 <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
                   <span className="text-[#e59874] font-bold uppercase tracking-wider">

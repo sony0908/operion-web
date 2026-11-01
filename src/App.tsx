@@ -69,7 +69,7 @@ export default function App() {
         <img
           src="/operion-logo.png"
           alt="OPERION Logo"
-          className="w-[440px] max-w-[85vw] object-contain opacity-20 filter contrast-125 transition-opacity duration-700"
+          className="w-[460px] max-w-[88vw] object-contain opacity-35 filter contrast-125 transition-opacity duration-700"
         />
       </div>
 
