@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@theme {
+  --font-script: 'Alex Brush', 'Great Vibes', cursive;
+  --font-editorial: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --color-matte-bg: #090a0d;
+  --color-matte-card: #131418;
+  --color-copper: #e58a5b;
+  --color-copper-peach: #f2996e;
+  --color-muted-text: #8a8d98;
+}
+
+/* Tipografía manuscrita de lujo para el logotipo de texto Operion */
+.font-operion-script {
+  font-family: 'Alex Brush', 'Great Vibes', cursive;
+}
+
+/* Micro-etiquetas técnicas STEP 1, STEP 2, STEP 3 */
+.font-step-tag {
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.22em;
+}
+
+/* Botón cálido exacto al de la referencia 'See Your Ritual ->' */
+.btn-ritual-copper {
+  background-color: #f2996e;
+  color: #090a0d;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(242, 153, 110, 0.25);
+}
+.btn-ritual-copper:hover {
+  background-color: #e0895e;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(242, 153, 110, 0.35);
+}
+.btn-ritual-copper:active {
+  transform: scale(0.98);
+}

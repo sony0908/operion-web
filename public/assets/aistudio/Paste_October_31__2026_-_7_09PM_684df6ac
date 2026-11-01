@@ -1,0 +1,173 @@
+User: OPERION Documento maestro de producto, arquitectura e implementación
+Versión: 1.1
+Estado: Especificación técnica actualizada para iniciar el desarrollo
+Plataforma: Android nativo
+Nombre del proyecto: OPERION
+Visión general
+OPERION será una aplicación Android nativa que funcionará como centro de control para organizar, analizar y administrar múltiples proyectos personales y técnicos.
+Su objetivo es centralizar la información de los proyectos, comprender su estructura, facilitar su mantenimiento y generar documentación especializada para herramientas externas.
+OPERION integrará tres entornos con responsabilidades diferentes:
+OPERION: administra, coordina, analiza y controla los proyectos. Obsidian: representa visualmente la estructura, arquitectura y relaciones de los proyectos. NotebookLM: concentra todo el contenido educativo y de aprendizaje relacionado con los proyectos.
+OPERION no pretende reemplazar estas herramientas. Su función es coordinarlas y preparar información adecuada para cada una.
+Separación entre Obsidian y NotebookLM
+Esta separación es una decisión fundamental y debe respetarse durante todo el desarrollo.
+2.1. Obsidian: estructura y visión estratégica
+Obsidian tendrá un vault dedicado exclusivamente a OPERION.
+Su finalidad será mostrar de manera ordenada y visual el panorama de los proyectos, permitiendo comprender sus componentes y tomar decisiones.
+Contenido destinado a Obsidian:
+Propósito y objetivos de cada proyecto. Estado general y etapas de desarrollo. Arquitectura de software. Estructura de carpetas y módulos. Tecnologías y herramientas utilizadas. Dependencias internas y externas. Relaciones entre módulos y proyectos. Riesgos y limitaciones. Decisiones técnicas. Diagramas Mermaid. Mapas de relaciones. Resúmenes ejecutivos. Documentación estructural.
+Obsidian no debe convertirse en un repositorio de apuntes educativos.
+No se deben enviar aquí glosarios, lecciones, ejercicios, explicaciones didácticas ni rutas de aprendizaje.
+2.2. NotebookLM: aprendizaje y formación
+NotebookLM será el destino de todo el contenido cuyo propósito sea aprender, estudiar o comprender tecnologías y conceptos.
+Contenido destinado a NotebookLM:
+Glosarios. Definiciones. Explicaciones de conceptos. Fundamentos tecnológicos. Prerrequisitos. Rutas de aprendizaje. Guías didácticas. Explicaciones educativas de arquitecturas. Comparaciones entre tecnologías. Bibliografía y fuentes. Preguntas y ejercicios. Evaluaciones. Material para comprender el código. Explicaciones de lenguajes, frameworks, APIs y bases de datos.
+Todo contenido de aprendizaje debe dirigirse a NotebookLM, no a Obsidian.
+2.3. Clasificación automática
+OPERION debe clasificar los resultados antes de generar documentos.
+Regla principal:
+Si el contenido explica cómo está organizado un proyecto y ayuda a tomar decisiones, corresponde a Obsidian. Si el contenido enseña a comprender una tecnología, concepto o parte del código, corresponde a NotebookLM. Si un análisis contiene ambas clases de información, OPERION debe dividirlo en dos entregables relacionados.
+El usuario siempre debe poder revisar el contenido antes de exportarlo.
+Funciones principales de OPERION
+La aplicación debe permitir:
+Crear y administrar proyectos. Registrar objetivos y descripciones. Conectar repositorios de GitHub. Analizar repositorios. Identificar tecnologías y lenguajes. Reconocer estructuras de carpetas y módulos. Detectar dependencias. Comprender arquitecturas. Identificar posibles problemas y riesgos. Generar tareas a partir de los análisis. Administrar prioridades y estados. Registrar decisiones técnicas. Mantener un historial de análisis. Generar documentación para Obsidian. Preparar material educativo para NotebookLM. Administrar integraciones. Registrar qué información fue exportada y cuándo. 4. Arquitectura general
+La arquitectura se dividirá en cinco componentes principales.
+4.1. Aplicación Android
+Tecnologías propuestas:
+Kotlin. Jetpack Compose. Arquitectura por capas. ViewModel. Comunicación mediante API HTTPS. Storage Access Framework (SAF) para acceder al vault local de Obsidian.
+Módulos de la aplicación:
+OPERION ANDROID │ ├── Dashboard ├── Projects ├── Tasks ├── Analysis ├── Knowledge ├── Obsidian ├── Integrations └── Settings
+Descripción:
+Dashboard: resumen general de proyectos, tareas y actividad. Projects: administración de proyectos. Tasks: gestión de tareas y prioridades. Analysis: análisis de repositorios y resultados. Knowledge: paquetes educativos destinados a NotebookLM. Obsidian: documentación estratégica y exportación. Integrations: administración de conexiones externas. Settings: configuración general.
+La aplicación Android no debe contener claves privadas de proveedores de IA ni credenciales administrativas del backend.
+4.2. Backend administrado
+Se propone inicialmente Supabase, aunque su elección definitiva está pendiente de confirmación.
+Servicios necesarios:
+Autenticación. PostgreSQL. Row Level Security (RLS). Almacenamiento de archivos. Funciones de backend. Procesamiento de trabajos asíncronos. Registro de actividad. Gestión segura de credenciales de proveedores externos.
+El backend será responsable de ejecutar operaciones sensibles y administrar las conexiones externas.
+4.3. Integración con GitHub
+La integración permitirá conectar repositorios autorizados y obtener información para analizarlos.
+Funciones iniciales:
+Conectar cuenta. Seleccionar repositorios. Obtener metadatos. Leer estructura de carpetas. Leer archivos relevantes. Identificar lenguajes. Identificar dependencias. Consultar ramas y commits. Registrar la revisión analizada.
+Para el MVP se utilizará una integración de solo lectura.
+No se permitirá modificar, eliminar ni crear archivos en los repositorios.
+Se recomienda utilizar GitHub App con permisos mínimos.
+4.4. Motor de análisis con IA
+El motor de análisis recibirá información seleccionada del repositorio y producirá resultados estructurados.
+Estrategia inicial de análisis
+Para el MVP se evitará implementar una arquitectura RAG compleja.
+Se priorizará utilizar modelos de IA con ventanas de contexto amplias para analizar conjuntamente:
+Árbol de directorios completo. Archivos de configuración relevantes. Archivos de dependencias. Puntos de entrada. Archivos de código seleccionados. Documentación técnica. Esquemas de bases de datos. Definiciones de APIs y funciones.
+La intención es entregar un contexto suficientemente amplio y relacionado en una misma solicitud para mejorar la inferencia de la arquitectura general.
+Se considerará el uso de modelos de contexto extenso, por ejemplo modelos Gemini disponibles y vigentes al momento de la implementación. La referencia a Gemini 1.5 Pro es orientativa y no constituye una dependencia obligatoria.
+Límites y estrategia de contexto
+El sistema no debe asumir que cualquier repositorio completo cabe en una única solicitud.
+Debe implementar:
+Inventario inicial del repositorio. Identificación de archivos relevantes. Exclusión de archivos sensibles. Estimación del tamaño del contexto. Selección de archivos según relevancia. División en bloques cuando se supere el límite disponible. Análisis complementario de módulos cuando sea necesario. Consolidación de resultados en una arquitectura general.
+La arquitectura debe permitir incorporar estrategias de recuperación de información o RAG en el futuro, si el tamaño o la complejidad de los proyectos lo requieren.
+Capacidades del motor
+Debe poder identificar:
+Lenguajes. Frameworks. Librerías. Arquitectura. Módulos. Dependencias. Bases de datos. APIs. Servicios externos. Puntos de entrada. Flujos de información. Riesgos técnicos. Oportunidades de mejora.
+Debe separar claramente:
+Observado: información comprobable en los archivos. Inferido: conclusiones razonables, pero no demostradas directamente. Desconocido: información que no se puede determinar con los datos disponibles.
+Cada conclusión relevante debe incluir evidencia, como rutas de archivos y revisión del repositorio.
+El motor debe utilizar una capa de abstracción para permitir cambiar o incorporar proveedores de IA.
+4.5. Conectores externos
+OPERION tendrá dos conectores de salida independientes.
+Conector Obsidian
+Responsabilidades:
+Generar Markdown. Crear enlaces internos. Generar diagramas Mermaid. Mantener una estructura organizada. Acceder al vault local mediante Storage Access Framework. Crear y actualizar archivos Markdown. Actualizar diagramas Mermaid. Mostrar diferencias antes de reemplazar documentos. Solicitar aprobación del usuario.
+La escritura local se realizará desde Android mediante SAF. El usuario seleccionará inicialmente la carpeta OPERION_VAULT utilizando el intent ACTION_OPEN_DOCUMENT_TREE.
+OPERION deberá conservar el permiso de acceso persistente al URI autorizado mediante los mecanismos de permisos de SAF. Así podrá reutilizar la autorización en futuras sesiones sin solicitar nuevamente el acceso, mientras Android y el proveedor de documentos mantengan válido dicho permiso.
+La aplicación debe comprobar que puede acceder al directorio seleccionado y manejar correctamente permisos revocados, carpetas movidas o proveedores de almacenamiento incompatibles.
+Conector NotebookLM
+Responsabilidades:
+Crear notebooks asociados a proyectos o temas de aprendizaje. Generar documentos educativos. Crear glosarios. Preparar guías de aprendizaje. Organizar fuentes. Crear índices. Generar ejercicios. Incorporar contenido educativo como fuentes de texto. Registrar el notebook de destino. Mantener el estado de creación y actualización de fuentes.
+Se implementará un conector de automatización mediante las capacidades de API de NotebookLM que estén disponibles para la cuenta y el entorno de desarrollo.
+El diseño del conector contempla operaciones como:
+create_notebook: creación de notebooks. batch_create_sources: incorporación de múltiples fuentes de contenido.
+Estas operaciones representan los contratos funcionales esperados. Antes de implementar el conector definitivo se debe verificar la disponibilidad, documentación, autenticación, permisos y esquema real de los endpoints correspondientes.
+El conector deberá encapsular las operaciones externas para permitir adaptar su implementación si cambian las interfaces o condiciones del servicio.
+El objetivo funcional es que OPERION pueda crear el notebook e incorporar automáticamente el contenido, glosarios y guías como fuentes, sin depender del proceso manual de descarga e importación.
+Flujo de funcionamiento USUARIO │ ▼ OPERION ANDROID │ ▼ BACKEND CLOUD │ ├── Base de datos │ ├── GitHub Connector │ │ │ ▼ │ Análisis del repositorio │ │ │ ▼ │ Motor de IA │ │ │ ▼ │ Resultados estructurados │ │ │ ├── Documentación estratégica │ │ │ │ │ ▼ │ │ OBSIDIAN │ │ Escritura local mediante SAF │ │ │ └── Contenido educativo │ │ │ ▼ │ NOTEBOOKLM │ Creación e incorporación automática │ ▼ HISTORIAL Y CONTROL DE OPERION
+Flujo detallado:
+El usuario crea un proyecto. Registra su propósito y descripción. Conecta un repositorio, si corresponde. Selecciona el tipo de análisis. OPERION crea un trabajo. El backend obtiene los archivos autorizados. Se excluyen archivos sensibles. Se ejecuta la sanitización de datos. El motor analiza el repositorio. Se estructuran los resultados. OPERION presenta los resultados. El usuario revisa y aprueba. Se generan documentos para Obsidian y/o NotebookLM. Obsidian recibe los documentos mediante el acceso local autorizado. NotebookLM recibe los contenidos educativos mediante su conector. Se registra cada operación en el historial. 6. Modelo de datos inicial
+Modelo conceptual que deberá convertirse en migraciones SQL versionadas.
+Tabla projects id: UUID. owner_id: UUID. name: nombre del proyecto. slug: identificador legible. description: descripción. purpose: propósito. status: estado. created_at. updated_at. Tabla tasks id: UUID. project_id: UUID. owner_id: UUID. title. description. status. priority. due_at. created_at. updated_at. Tabla integrations id: UUID. provider: proveedor. display_name. status. created_at. Tabla project_integrations id: UUID. project_id: UUID. integration_id: UUID. external_reference. configuration: JSONB sin secretos. created_at. Tabla analysis_jobs id: UUID. project_id: UUID. status. analysis_type. repository_revision. requested_at. started_at. finished_at. error_summary. Tabla analysis_results id: UUID. job_id: UUID. result_type. content: JSONB. evidence: JSONB. confidence. created_at. Tabla documents id: UUID. project_id: UUID. destination: obsidian o notebooklm. document_type. title. content_reference. version. export_status. created_at. updated_at. Tabla learning_packages id: UUID. project_id: UUID. title. manifest: JSONB. package_reference. import_status. created_at. Tabla activity_logs id: UUID. owner_id: UUID. project_id: UUID nullable. action. details: JSONB. created_at.
+Requisitos:
+Utilizar UUID como identificadores. Definir claves foráneas. Añadir índices a campos de búsqueda frecuente. Aplicar RLS. Validar estados mediante restricciones o enumeraciones. Mantener migraciones SQL versionadas. Registrar referencias externas de notebooks y fuentes creadas. Registrar errores y resultados de sincronización de los conectores. 7. API inicial
+Prefijo sugerido: /api/v1.
+GET /projects POST /projects GET /projects/{projectId} PATCH /projects/{projectId} DELETE /projects/{projectId} GET /projects/{projectId}/tasks POST /projects/{projectId}/tasks PATCH /tasks/{taskId} GET /integrations POST /integrations/github/connect GET /projects/{projectId}/analysis POST /projects/{projectId}/analysis GET /analysis/{jobId} GET /analysis/{jobId}/results POST /projects/{projectId}/documents/preview POST /documents/{documentId}/approve-export GET /projects/{projectId}/learning-packages POST /projects/{projectId}/learning-packages GET /activity
+Estas rutas son contratos conceptuales. La implementación final dependerá del backend elegido.
+Las operaciones locales de escritura en Obsidian se ejecutarán desde Android mediante SAF. Las operaciones remotas de NotebookLM se ejecutarán mediante el backend o el componente seguro que corresponda a la autenticación y API disponibles.
+Estructura del vault de Obsidian
+Vault dedicado: OPERION_VAULT.
+OPERION_VAULT/ │ ├── 00_DASHBOARD/ │ ├── Inicio.md │ └── Mapa_Global.md │ ├── 01_PROYECTOS/ │ ├── avisos-hospital/ │ │ ├── Overview.md │ │ ├── Arquitectura.md │ │ ├── Estructura.md │ │ ├── Herramientas.md │ │ ├── Dependencias.md │ │ └── Decisiones.md │ │ │ ├── alianapp/ │ │ │ └── datapack-generator/ │ ├── 02_RELACIONES/ │ └── Dependencias_entre_proyectos.md │ └── 03_PLANTILLAS/ ├── Proyecto.md └── Decision_Tecnica.md
+Los proyectos incluidos son ejemplos iniciales. Deben validarse antes de crear documentos definitivos.
+8.1. Acceso y escritura local mediante SAF
+OPERION utilizará Android Storage Access Framework para acceder al directorio del vault.
+Procedimiento:
+Solicitar al usuario seleccionar OPERION_VAULT. Lanzar el intent ACTION_OPEN_DOCUMENT_TREE. Recibir el URI del directorio autorizado. Solicitar y conservar el permiso persistente de lectura y escritura mediante takePersistableUriPermission. Guardar la referencia URI autorizada en la configuración local de la aplicación. Utilizar DocumentFile y las APIs correspondientes de ContentResolver para crear, leer y actualizar documentos. Comprobar los permisos antes de cada operación importante. Mostrar errores comprensibles si el directorio deja de estar disponible.
+El usuario realizará la autorización inicial. OPERION podrá reutilizarla mientras el permiso siga vigente.
+La implementación debe respetar las restricciones de Android y del proveedor de documentos. No debe asumir que cualquier directorio o almacenamiento permite todas las operaciones.
+8.2. Reglas de actualización
+Los documentos deben incorporar:
+Fecha de generación. Versión del documento. Commit analizado, cuando corresponda. Evidencia y referencias. Relaciones con otros documentos.
+Las actualizaciones deben mostrar diferencias antes de reemplazar contenido.
+OPERION debe evitar sobrescribir modificaciones manuales del usuario sin aprobación.
+La aplicación debe poder identificar documentos creados por OPERION y distinguirlos de contenido ajeno.
+Paquetes educativos para NotebookLM
+Cada paquete debe incluir:
+NOTEBOOKLM_PACKAGE/ │ ├── README.md ├── manifest.json ├── 01_FUNDAMENTOS.md ├── 02_GLOSARIO.md ├── 03_ARQUITECTURA_EXPLICADA.md ├── 04_GUIA_DE_APRENDIZAJE.md ├── 05_EJERCICIOS.md └── 06_FUENTES.md
+La estructura puede variar según el tema.
+Cada paquete debe identificar:
+Proyecto de origen. Objetivo educativo. Temas incluidos. Prerrequisitos. Fuentes utilizadas. Fecha y versión. Relación con el análisis técnico original. Notebook de destino. Identificadores de las fuentes incorporadas. 9.1. Automatización de NotebookLM
+El flujo esperado será:
+OPERION genera el contenido educativo. Clasifica y valida las fuentes. Prepara el paquete y su manifiesto. Solicita aprobación cuando corresponda. Utiliza el conector de NotebookLM para crear el notebook si todavía no existe. Incorpora las fuentes de texto mediante operaciones de creación individual o por lotes. Registra los identificadores devueltos. Verifica el resultado de la operación. Actualiza el historial y estado del paquete.
+La integración debe contemplar:
+Reintentos controlados. Manejo de errores. Prevención de duplicados. Registro de fuentes existentes. Actualización de fuentes cuando el servicio lo permita. Trazabilidad entre paquete, notebook y proyecto.
+La implementación debe utilizar los endpoints y mecanismos de autenticación realmente documentados y disponibles. No se deben simular respuestas exitosas ni declarar una fuente incorporada si el servicio no lo confirma.
+Seguridad y privacidad
+Requisitos obligatorios:
+Autenticación segura. RLS en las tablas correspondientes. Validación de permisos en backend. Secretos almacenados únicamente en el servidor. Tokens con permisos mínimos. Comunicación HTTPS. Registro de acciones relevantes. Límites de uso y costo. Exclusión de secretos y archivos sensibles. No ejecutar código descargado de repositorios. No enviar información clínica, identificable o institucional confidencial a proveedores externos sin autorización institucional expresa y controles adecuados. Permitir desconectar integraciones. Definir políticas de retención y eliminación. 10.1. Sanitización automática de información
+Antes de enviar cualquier payload a un proveedor de IA, OPERION deberá ejecutar un proceso automático de sanitización.
+La sanitización podrá ejecutarse en Android, en el backend Supabase o en ambos componentes, según el flujo de datos.
+Se utilizarán expresiones regulares (Regex) para detectar patrones asociados a:
+RUN y otros identificadores personales. Correos electrónicos. Teléfonos. Direcciones y datos de contacto. Nombres de pacientes cuando puedan detectarse mediante patrones o reglas adicionales. Fechas asociadas a información clínica. Identificadores de fichas o registros. Tokens, contraseñas y credenciales. Claves privadas y cadenas de conexión.
+Cuando se detecte información potencialmente sensible, OPERION deberá:
+Identificar el archivo y la ubicación del hallazgo. Evitar incluir el fragmento sensible en el payload. Sustituirlo por un marcador neutro cuando sea necesario conservar el contexto. Registrar el evento sin guardar el valor sensible. Bloquear el envío si no puede garantizarse una sanitización suficiente. Permitir revisión manual antes de continuar.
+Regex será una primera barrera, no una garantía completa de anonimización. Debe complementarse con exclusión de archivos, reglas específicas por tipo de proyecto, inspección de contenido y validaciones de seguridad.
+La sanitización no autoriza por sí sola el envío de información clínica o institucional confidencial a servicios externos. Para proyectos institucionales se aplicarán las restricciones adicionales de la sección 15.
+10.2. Exclusiones obligatorias
+Archivos y datos que deben excluirse del análisis:
+.env. Claves privadas. Tokens. Contraseñas. Credenciales. Certificados privados. Archivos con información sensible. Datos personales o clínicos. Registros reales de pacientes. Exportaciones de sistemas clínicos. Bases de datos con información identificable.
+La exclusión debe aplicarse antes de construir el contexto destinado al proveedor de IA.
+Tipos de análisis
+OPERION debe permitir seleccionar análisis independientes.
+Inventario: lenguajes, archivos, carpetas y tecnologías. Arquitectura: módulos, capas, entradas y flujos de datos. Dependencias: librerías y relaciones entre módulos. Persistencia: bases de datos, esquemas y acceso a datos. Integraciones: APIs y servicios externos. Calidad: pruebas, documentación y posibles duplicaciones. Seguridad básica: riesgos y exposición accidental de secretos. Aprendizaje: conocimientos necesarios para comprender el proyecto.
+Cada análisis debe registrar su alcance, fecha, revisión del repositorio y evidencia.
+Interfaz de usuario
+Pantallas propuestas:
+Dashboard Proyectos activos. Tareas prioritarias. Análisis recientes. Actividad reciente. Alertas importantes. Proyectos Listado. Búsqueda. Filtros. Creación y edición. Detalle del proyecto Propósito. Estado. Repositorios. Tareas. Arquitectura. Dependencias. Documentos relacionados. Análisis Selección de análisis. Estado del trabajo. Resultados. Evidencias. Revisión y aprobación. Obsidian Documentos estratégicos. Estado de autorización SAF. Vault seleccionado. Vista previa. Diferencias. Exportación. Estado de escritura local. NotebookLM Paquetes educativos. Notebooks asociados. Fuentes incorporadas. Estado de creación y actualización. Historial de operaciones. Errores de integración. Integraciones Conexiones. Permisos. Estado. Desconexión. Configuración Cuenta. Preferencias. Proveedores. Límites de uso. Política de privacidad por proyecto.
+La interfaz debe ser clara, moderna y sobria. Evitar saturación visual y automatizaciones que oculten decisiones importantes.
+Plan de desarrollo Fase 0 — Especificación técnica Confirmar proveedor cloud. Confirmar proveedor o estrategia de IA. Definir modelo de usuarios. Definir acceso al vault Obsidian mediante SAF. Verificar las capacidades de API de NotebookLM. Definir autenticación y permisos del conector NotebookLM. Revisar base de datos y contratos API. Definir política de privacidad por proyecto. Definir presupuesto y límites de uso de IA. Fase 1 — Backend Crear proyecto cloud. Configurar autenticación. Crear base de datos. Implementar migraciones. Configurar RLS. Implementar proyectos y tareas. Implementar historial. Crear pruebas de autorización. Preparar almacenamiento seguro de credenciales. Implementar registro de trabajos asíncronos. Fase 2 — Android Crear proyecto Kotlin/Compose. Implementar autenticación. Crear dashboard. Crear módulos de proyectos y tareas. Conectar con backend. Manejar errores y estados de carga. Implementar gestión de permisos y configuración local. Fase 3 — GitHub Crear GitHub App. Implementar autorización. Seleccionar repositorios. Leer metadatos y archivos. Registrar commits. Probar permisos y exclusiones. Fase 4 — Motor de análisis Crear cola de trabajos. Implementar estados. Crear análisis de inventario. Crear análisis de arquitectura. Implementar selección de archivos relevantes. Preparar contexto de tamaño controlado. Incorporar modelos de contexto extenso. Estructurar resultados. Incorporar evidencia. Implementar sanitización automática. Añadir límites de uso. Fase 5 — Obsidian Implementar selección del vault mediante ACTION_OPEN_DOCUMENT_TREE. Conservar el permiso persistente URI. Comprobar acceso de lectura y escritura. Crear generador Markdown. Crear plantillas. Generar Mermaid. Implementar escritura local mediante DocumentFile y ContentResolver. Implementar vista previa. Implementar diferencias. Evitar sobrescrituras no autorizadas. Registrar cada exportación y actualización. Fase 6 — NotebookLM Verificar y documentar las capacidades reales de API. Implementar autenticación segura. Crear el conector. Implementar creación de notebooks. Implementar incorporación de fuentes de texto. Utilizar operaciones por lotes cuando estén disponibles. Crear generador educativo. Crear glosarios y guías. Generar manifiestos. Registrar identificadores de notebooks y fuentes. Implementar reintentos y prevención de duplicados. Verificar cada operación antes de actualizar su estado. Fase 7 — Mejoras Análisis incremental. Alertas. Proveedores adicionales. Automatizaciones configurables. Métricas de costo. Colaboración multiusuario, si se requiere. 14. Alcance del MVP
+Incluido:
+Aplicación Android nativa. Backend administrado. Autenticación. Gestión de proyectos. Gestión de tareas. GitHub de solo lectura. Análisis básico. Motor de IA con contexto extenso. Sanitización automática previa al envío de payloads. Historial. Generación y escritura local de Markdown para Obsidian mediante SAF. Generación automática de notebooks y fuentes educativas mediante el conector de NotebookLM, una vez verificada su API. Revisión y aprobación antes de exportar o actualizar contenido. Registro de operaciones y errores de conectores.
+Fuera del MVP:
+Modificación automática de repositorios. Agentes autónomos con permisos amplios. Sincronización bidireccional automática de Obsidian. Clonación y almacenamiento completo de repositorios. Colaboración avanzada. Ejecución de código de repositorios. Arquitecturas RAG complejas, salvo que los límites reales del contexto lo hagan necesario. 15. Decisiones pendientes y estrategia de privacidad
+No asumir estas propuestas como decisiones confirmadas:
+Backend: Supabase es la opción inicial recomendada, pero falta confirmación. IA: definir el proveedor y los modelos vigentes que se utilizarán. Usuarios: decidir si el producto será inicialmente individual o multiusuario. NotebookLM: verificar endpoints, autenticación, permisos, límites y disponibilidad de las operaciones requeridas. Almacenamiento: definir retención de archivos y resultados. Costos: establecer presupuesto y límites de análisis. Obsidian: validar compatibilidad del proveedor de documentos con escritura mediante SAF. Privacidad institucional: definir qué proyectos pueden utilizar servicios externos y bajo qué autorización. 15.1. Estrategia de consumo de IA por tipo de proyecto
+La estrategia de consumo se dividirá en dos fases según el tipo de proyecto y su nivel de confidencialidad.
+Fase A — Proyectos personales
+Para proyectos personales, como juegos, aplicaciones propias y prototipos sin información sensible:
+Utilizar Google AI Studio en su modalidad gratuita cuando esté disponible. Priorizar modelos gratuitos con contexto extenso. Controlar límites de solicitudes y consumo. Evitar enviar credenciales, secretos o datos personales. Permitir cambiar de modelo sin modificar el resto de la arquitectura. Fase B — Proyectos institucionales
+Para proyectos institucionales, como aplicaciones hospitalarias, radiología, inyectoras y otros sistemas vinculados a organizaciones:
+No utilizar el tier gratuito para analizar código institucional. Utilizar un servicio de pago Pay-as-you-go únicamente después de verificar sus condiciones contractuales y de tratamiento de datos. Confirmar que el plan y la configuración aplicables excluyan el uso de los datos enviados para entrenar o mejorar modelos. Verificar autorización institucional antes de enviar código o información. Aplicar sanitización y exclusión de archivos sensibles. Mantener fuera de los proveedores externos toda información clínica, identificable o de pacientes, salvo autorización institucional específica y un marco de protección de datos aprobado.
+La contratación de un servicio de pago no constituye por sí sola autorización para enviar información hospitalaria. Deben cumplirse tanto las condiciones contractuales del proveedor como las políticas de la institución.
+OPERION debe identificar el tipo de proyecto y aplicar la política correspondiente antes de habilitar un análisis con IA.
+Instrucciones para agentes de programación
+Cualquier agente de IA que trabaje en OPERION debe:
+Leer este documento antes de implementar cambios. Respetar la separación entre Obsidian y NotebookLM. No convertir decisiones pendientes en decisiones confirmadas. Implementar primero el MVP. Mantener una arquitectura modular. No guardar secretos en Android ni en GitHub. No habilitar escritura en GitHub durante el MVP. No enviar archivos excluidos ni información sensible a proveedores externos. Crear pruebas de autenticación y autorización. Mantener migraciones SQL versionadas. Documentar decisiones técnicas. Solicitar aprobación antes de operaciones destructivas. No declarar una integración funcional hasta haberla probado. Mantener trazabilidad entre análisis, evidencia y documentos generados. Implementar sanitización automática antes de cualquier envío de payload a IA. Aplicar las políticas de privacidad según el tipo de proyecto. No considerar Regex como garantía suficiente de anonimización. Verificar las condiciones de uso y privacidad del proveedor de IA antes de habilitar análisis institucionales. Implementar el acceso al vault de Obsidian mediante SAF y permisos URI persistentes. No asumir que el permiso SAF permanece válido si el usuario lo revoca o cambia el directorio. Verificar la disponibilidad real de los endpoints de NotebookLM antes de desarrollar o declarar funcional el conector. No simular respuestas exitosas de APIs externas. Registrar los identificadores de notebooks y fuentes creados. Manejar errores, reintentos y duplicados en las integraciones. Mantener los proveedores de IA y conectores desacoplados del resto de la aplicación. 17. Criterios de aceptación del MVP
+La primera versión se considerará funcional cuando:
+El usuario pueda autenticarse. Pueda crear y administrar proyectos. Pueda crear y administrar tareas. Pueda conectar un repositorio GitHub autorizado en modo lectura. Pueda solicitar un análisis y consultar su estado. Los resultados incluyan evidencia. Se distingan observaciones, inferencias y datos desconocidos. El motor pueda analizar la estructura general del repositorio mediante contexto extenso. La sanitización se ejecute antes de enviar información a IA. Las políticas de privacidad se apliquen según el tipo de proyecto. Pueda autorizar el acceso al vault de Obsidian mediante SAF. Pueda generar y actualizar documentos Markdown y Mermaid en el directorio autorizado. Pueda revisar los cambios antes de sobrescribir documentos. Pueda crear notebooks y fuentes educativas mediante el conector de NotebookLM, si las operaciones están disponibles y verificadas. El historial registre análisis, exportaciones y operaciones de conectores. Las políticas de seguridad impidan acceder a información de otros usuarios. La aplicación no exponga secretos ni envíe archivos excluidos a servicios externos. Los errores de integración se informen sin declarar operaciones incompletas como exitosas.
+Fin del documento maestro de OPERION.

@@ -1,0 +1,6 @@
+{
+  "name": "OPERION - Control & Migraciones Backend",
+  "description": "Centro de control de proyectos OPERION: backend administrado, migraciones SQL versionadas, sanitización de datos, análisis de repositorios y conectores a Obsidian y NotebookLM.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

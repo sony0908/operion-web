@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPERION - UI Interactiva Multi-Pestañas para Google Stitch</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#151f32',
+              950: '#070b13',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased pb-20 md:pb-6">
+
+  <!-- ========================================== -->
+  <!-- 1. HEADER / CABECERA PRINCIPAL             -->
+  <!-- ========================================== -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo e Identidad -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 font-extrabold text-slate-950 tracking-wider">
+            OP
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base font-extrabold tracking-tight text-white">OPERION</h1>
+              <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">
+                v1.1 MVP
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium hidden sm:block">
+              Centro de Control // Backend Supabase & Separación Obsidian-NotebookLM
+            </p>
+          </div>
+        </div>
+
+        <!-- Badges de Conectividad en Tiempo Real -->
+        <div class="flex items-center gap-2 text-xs font-mono">
+          <div class="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="hidden md:inline">Supabase Cloud:</span>
+            <span>tphiciknevchddpeklmk</span>
+          </div>
+          <div class="hidden sm:flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-full border border-slate-800 text-cyan-400">
+            <span>@sony0908</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Barra de Navegación por Pestañas (Desktop & Tablet) -->
+      <nav class="flex space-x-1 overflow-x-auto pb-2 scrollbar-none text-xs font-medium" id="tab-nav">
+        <button onclick="selectTab('migrations')" id="nav-migrations" class="tab-btn px-3 py-2 rounded-lg bg-emerald-600 text-white font-bold shadow-sm whitespace-nowrap transition">
+          1. Backend & Migraciones (9 Tablas)
+        </button>
+        <button onclick="selectTab('projects')" id="nav-projects" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          2. Proyectos & Tareas
+        </button>
+        <button onclick="selectTab('sanitizer')" id="nav-sanitizer" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          3. Sanitización de Datos
+        </button>
+        <button onclick="selectTab('analysis')" id="nav-analysis" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          4. Motor de Análisis IA
+        </button>
+        <button onclick="selectTab('obsidian')" id="nav-obsidian" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          5. Obsidian (OPERION_VAULT)
+        </button>
+        <button onclick="selectTab('notebooklm')" id="nav-notebooklm" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          6. NotebookLM (Didáctico)
+        </button>
+        <button onclick="selectTab('api')" id="nav-api" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          7. Consola REST
+        </button>
+        <button onclick="selectTab('activity')" id="nav-activity" class="tab-btn px-3 py-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-850 whitespace-nowrap transition">
+          8. Auditoría
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. CONTENIDO PRINCIPAL                     -->
+  <!-- ========================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 1: BACKEND & MIGRACIONES                         -->
+    <!-- ======================================================== -->
+    <div id="tab-migrations" class="tab-content active space-y-6">
+      
+      <!-- Estado de Supabase Cloud -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-bold text-slate-100">PostgreSQL 17 — Supabase Cloud Activo</h2>
+              <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">
+                9 Tablas Creadas
+              </span>
+              <span class="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">
+                RLS Habilitado
+              </span>
+            </div>
+            <p class="text-sm text-slate-400 mt-1">
+              Host: <code class="text-emerald-400 font-mono">db.tphiciknevchddpeklmk.supabase.co:5432</code> | Las 5 migraciones fueron ejecutadas con éxito.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="px-3.5 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold shadow-sm">
+              ✓ Migraciones Sincronizadas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablas en la base de datos -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.projects</span>
+          <p class="text-slate-400 text-[11px]">Proyectos personales e institucionales con slug único y owner_id.</p>
+        </div>
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.tasks</span>
+          <p class="text-slate-400 text-[11px]">Tareas técnicas con prioridades (low, medium, high, critical).</p>
+        </div>
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.analysis_jobs</span>
+          <p class="text-slate-400 text-[11px]">Cola asíncrona de procesamiento con IA de contexto extenso.</p>
+        </div>
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.analysis_results</span>
+          <p class="text-slate-400 text-[11px]">Campos JSONB: Observado, Inferido, Desconocido y Evidencia.</p>
+        </div>
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.documents</span>
+          <p class="text-slate-400 text-[11px]">Entregables Markdown y diagramas Mermaid para Obsidian.</p>
+        </div>
+        <div class="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-1">
+          <span class="text-emerald-400 font-bold block">public.learning_packages</span>
+          <p class="text-slate-400 text-[11px]">Paquetes educativos estructurados para NotebookLM.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 2: PROYECTOS & TAREAS                            -->
+    <!-- ======================================================== -->
+    <div id="tab-projects" class="tab-content space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+        <div>
+          <h2 class="text-base font-bold text-white">Proyectos y Repositorios</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Gestión de repositorios vinculados desde GitHub (@sony0908).</p>
+        </div>
+        <button class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 self-start sm:self-auto">
+          + Nuevo Proyecto
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Tarjetas de Repositorios -->
+        <div class="lg:col-span-6 space-y-3">
+          
+          <!-- Proyecto 1: avisos-hospital -->
+          <div class="p-4 rounded-xl border bg-slate-850 border-emerald-500/50 shadow-md ring-1 ring-emerald-500/20 space-y-2">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="text-sm font-bold text-white">avisos-hospital</h4>
+                <span class="text-[11px] font-mono text-slate-400">sony0908/avisos-hospital</span>
+              </div>
+              <span class="text-[10px] font-mono bg-rose-950/60 text-rose-300 border border-rose-800/60 px-2 py-0.5 rounded-full">
+                Fase B: Institucional
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              App creada para notificar entre salas de imagenología médica con turnos de guardia.
+            </p>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <span>Zero Retention: OBLIGATORIO</span>
+              <span class="text-emerald-400 font-bold">Analizado ✓</span>
+            </div>
+          </div>
+
+          <!-- Proyecto 2: app-turnos -->
+          <div class="p-4 rounded-xl border bg-slate-900 border-slate-800 hover:border-slate-700 space-y-2">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="text-sm font-bold text-white">app-turnos</h4>
+                <span class="text-[11px] font-mono text-slate-400">sony0908/app-turnos</span>
+              </div>
+              <span class="text-[10px] font-mono bg-rose-950/60 text-rose-300 border border-rose-800/60 px-2 py-0.5 rounded-full">
+                Fase B: Institucional
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Organización de jefes y subrogantes de turno en el área de imagenología.
+            </p>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span>Sanitización Activa</span>
+              <span>Listo para analizar</span>
+            </div>
+          </div>
+
+          <!-- Proyecto 3: alianapp -->
+          <div class="p-4 rounded-xl border bg-slate-900 border-slate-800 hover:border-slate-700 space-y-2">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="text-sm font-bold text-white">alianapp</h4>
+                <span class="text-[11px] font-mono text-slate-400">sony0908/alianapp</span>
+              </div>
+              <span class="text-[10px] font-mono bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 px-2 py-0.5 rounded-full">
+                Fase A: Personal
+              </span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Aplicación comunitaria de coordinación barrial y marketplace de servicios.
+            </p>
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span>Modelo General Gemini</span>
+              <span class="text-emerald-400">Analizado ✓</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tareas Técnicas del Proyecto Seleccionado -->
+        <div class="lg:col-span-6 space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-2">
+              Tareas Pendientes de avisos-hospital (4)
+            </h3>
+
+            <div class="space-y-2">
+              <label class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" checked class="rounded text-emerald-600 focus:ring-0">
+                <span class="text-xs text-slate-200 line-through text-slate-500">Verificar exclusión de archivos clínicos y sanitización RUN</span>
+                <span class="ml-auto text-[10px] font-mono bg-rose-950/60 text-rose-300 px-2 py-0.5 rounded">CRITICAL</span>
+              </label>
+
+              <label class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="rounded text-emerald-600 focus:ring-0">
+                <span class="text-xs text-slate-200">Exportar diagrama de flujo a Obsidian (01_PROYECTOS)</span>
+                <span class="ml-auto text-[10px] font-mono bg-amber-950/60 text-amber-300 px-2 py-0.5 rounded">HIGH</span>
+              </label>
+
+              <label class="p-3 bg-slate-950 border border-slate-800 rounded-lg flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="rounded text-emerald-600 focus:ring-0">
+                <span class="text-xs text-slate-200">Verificar compatibilidad de WebSocket en salas hospitalarias</span>
+                <span class="ml-auto text-[10px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded">MEDIUM</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 3: SANITIZACIÓN DE DATOS (SECCIÓN 10 & 15)       -->
+    <!-- ======================================================== -->
+    <div id="tab-sanitizer" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <h2 class="text-lg font-bold text-white">Motor de Sanitización Previa a IA</h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Detección estricta de RUNs chilenos, fichas médicas, números telefónicos, claves privadas y tokens antes de cualquier transferencia a IA.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-6 space-y-3">
+          <label class="text-xs font-semibold text-slate-300 block">Código Fuente o Payload de Prueba:</label>
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-slate-300 leading-relaxed whitespace-pre overflow-x-auto">
+// Código detectado en hospital_triage.py
+paciente_run = "15.782.914-K"
+ficha = "Ficha clínica #948210"
+contacto = "+56987654321"
+token = "ghp_Abc987Xyz1234567890abcdefghijklmno"
+db_conn = "postgresql://postgres:AdminSecret2026!@10.0.4.15:5432/hospital"
+          </div>
+          <button class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold transition">
+            Ejecutar Sanitización de Prueba
+          </button>
+        </div>
+
+        <div class="lg:col-span-6 space-y-3">
+          <label class="text-xs font-semibold text-slate-300 block">Resultado Sanitizado y Bloqueo:</label>
+          <div class="p-4 bg-rose-950/40 border border-rose-800 rounded-xl text-xs text-rose-300 space-y-2">
+            <span class="font-bold text-rose-200 block">⚠️ ALERTA DE BLOQUEO INSTITUCIONAL (Fase B):</span>
+            <p>Se detectaron identificadores de pacientes (RUN y Ficha Clínica). En proyectos de categoría Institucional, la transferencia a modelos externos queda terminantemente bloqueada.</p>
+          </div>
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-emerald-400 leading-relaxed whitespace-pre overflow-x-auto">
+// Payload Limpio Reemplazado:
+paciente_run = "&lt;REDACTED_RUN&gt;"
+ficha = "&lt;REDACTED_CLINICAL_ID&gt;"
+contacto = "&lt;REDACTED_PHONE&gt;"
+token = "&lt;REDACTED_SECRET&gt;"
+db_conn = "&lt;REDACTED_CONNECTION_STRING&gt;"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 4: MOTOR DE ANÁLISIS IA (GEMINI 3.8 FLASH)       -->
+    <!-- ======================================================== -->
+    <div id="tab-analysis" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white">Análisis con Contexto Extenso (Gemini 3.8 Flash)</h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Separación obligatoria: <strong>Observado</strong> (evidencia en código), <strong>Inferido</strong> (hipótesis) y <strong>Desconocido</strong>.
+            </p>
+          </div>
+          <button class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition">
+            Ejecutar Análisis en alianapp
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 1. OBSERVADO -->
+        <div class="bg-slate-900 border border-emerald-500/30 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-emerald-400 font-bold text-sm">1. OBSERVADO</span>
+            <span class="text-[10px] font-mono bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">Comprobable</span>
+          </div>
+          <p class="text-xs text-slate-400">Hechos demostrados en los archivos examinados:</p>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-1">
+            <span class="text-xs font-semibold text-slate-200 block">Arquitectura TypeScript & React</span>
+            <span class="text-[10px] font-mono text-emerald-400">package.json (L1-L35)</span>
+          </div>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-1">
+            <span class="text-xs font-semibold text-slate-200 block">Exclusión estricta de .env</span>
+            <span class="text-[10px] font-mono text-emerald-400">.gitignore (L7-L9)</span>
+          </div>
+        </div>
+
+        <!-- 2. INFERIDO -->
+        <div class="bg-slate-900 border border-amber-500/30 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-amber-400 font-bold text-sm">2. INFERIDO</span>
+            <span class="text-[10px] font-mono bg-amber-950 text-amber-400 px-2 py-0.5 rounded">Hipótesis</span>
+          </div>
+          <p class="text-xs text-slate-400">Patrones deducidos razonablemente:</p>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-1">
+            <span class="text-xs font-semibold text-slate-200 block">Separación Frontend / Gateway</span>
+            <p class="text-[11px] text-amber-300/80">El repositorio separa lógica de interfaz de las llamadas de datos.</p>
+          </div>
+        </div>
+
+        <!-- 3. DESCONOCIDO -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <span class="text-slate-300 font-bold text-sm">3. DESCONOCIDO</span>
+            <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-2 py-0.5 rounded">Límites</span>
+          </div>
+          <p class="text-xs text-slate-400">Datos no determinables sin más archivos:</p>
+          <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-1">
+            <span class="text-xs font-semibold text-slate-200 block">Infraestructura de Despliegue</span>
+            <p class="text-[11px] text-slate-400">No existen archivos de Terraform o Kubernetes en el repositorio.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 5: OBSIDIAN (OPERION_VAULT / SAF)                -->
+    <!-- ======================================================== -->
+    <div id="tab-obsidian" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white">Conector Obsidian // OPERION_VAULT</h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Estructura estratégica, diagramas Mermaid y persistencia local en Android SAF.
+            </p>
+          </div>
+          <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition">
+            Descargar Archivo .md
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Árbol del Vault -->
+        <div class="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-xl p-4 font-mono text-xs space-y-1">
+          <span class="text-indigo-400 font-bold block mb-2">📁 OPERION_VAULT/</span>
+          <div class="pl-3 text-slate-500">├── 📁 00_DASHBOARD/</div>
+          <div class="pl-6 text-slate-400">└── Inicio.md</div>
+          <div class="pl-3 text-slate-500">├── 📁 01_PROYECTOS/</div>
+          <div class="pl-6 text-emerald-400 font-semibold">├── 📁 avisos-hospital/</div>
+          <div class="pl-9 text-indigo-300 font-bold">├── Arquitectura.md (Activo)</div>
+          <div class="pl-9 text-slate-400">└── Overview.md</div>
+          <div class="pl-6 text-slate-400">├── 📁 app-turnos/</div>
+          <div class="pl-6 text-slate-400">└── 📁 alianapp/</div>
+          <div class="pl-3 text-slate-500">├── 📁 02_RELACIONES/</div>
+          <div class="pl-3 text-slate-500">└── 📁 03_PLANTILLAS/</div>
+        </div>
+
+        <!-- Vista del Diagrama y Markdown -->
+        <div class="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="font-mono text-xs text-indigo-400">01_PROYECTOS/avisos-hospital/Arquitectura.md</span>
+            <span class="text-[10px] font-mono bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">SYNCED</span>
+          </div>
+
+          <div class="p-4 bg-slate-950 rounded-xl border border-slate-850 font-mono text-xs text-slate-300 space-y-2">
+            <span class="text-slate-400 font-bold block">Código Mermaid:</span>
+            <pre class="text-cyan-300 overflow-x-auto text-[11px] leading-relaxed">
+graph TD
+    App["App Médica Móvil (OPERION)"] --> API["FastAPI"]
+    API --> Sanitizer["Sanitizador RUN"]
+    Sanitizer --> DB[("Supabase PostgreSQL 17")]
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 6: NOTEBOOKLM (PAQUETES FORMATIVOS)              -->
+    <!-- ======================================================== -->
+    <div id="tab-notebooklm" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <h2 class="text-lg font-bold text-white">Paquetes Educativos // NotebookLM (Sección 9)</h2>
+        <p class="text-xs text-slate-400 mt-1">
+          Glosarios, lecciones didácticas y ejercicios de comprensión. Separado estrictamente de Obsidian.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+          <span class="text-amber-400 font-bold block">01_FUNDAMENTOS.md</span>
+          <p class="text-[11px] text-slate-400">Conceptos esenciales de arquitectura reactiva y persistencia.</p>
+        </div>
+        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+          <span class="text-amber-400 font-bold block">02_GLOSARIO.md</span>
+          <p class="text-[11px] text-slate-400">Términos técnicos: SAF, RLS, Zero Retention, WebSocket.</p>
+        </div>
+        <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+          <span class="text-amber-400 font-bold block">05_EJERCICIOS.md</span>
+          <p class="text-[11px] text-slate-400">Preguntas de auto-evaluación técnica sobre el código del proyecto.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 7: CONSOLA API REST                              -->
+    <!-- ======================================================== -->
+    <div id="tab-api" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <h2 class="text-lg font-bold text-white">Consola y Explorador de API REST (/api/v1)</h2>
+        <p class="text-xs text-slate-400 mt-1">Contratos activos del backend OPERION.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
+        <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span class="text-cyan-400 font-bold">GET /api/v1/projects</span>
+          <span class="text-slate-400">200 OK</span>
+        </div>
+        <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span class="text-cyan-400 font-bold">POST /api/v1/projects/:id/analysis</span>
+          <span class="text-slate-400">201 Created</span>
+        </div>
+        <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span class="text-cyan-400 font-bold">GET /api/v1/migrations</span>
+          <span class="text-slate-400">9 tablas</span>
+        </div>
+        <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span class="text-cyan-400 font-bold">GET /api/v1/integrations/github/repos</span>
+          <span class="text-slate-400">14 repos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PESTAÑA 8: AUDITORÍA & BITÁCORA                          -->
+    <!-- ======================================================== -->
+    <div id="tab-activity" class="tab-content space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <h2 class="text-lg font-bold text-white">Bitácora de Auditoría (public.activity_logs)</h2>
+        <p class="text-xs text-slate-400 mt-1">Registro inmutable de trazabilidad y eventos del sistema.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden font-mono text-xs">
+        <table class="w-full text-left">
+          <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="p-3 font-semibold">Evento</th>
+              <th class="p-3 font-semibold">Proyecto</th>
+              <th class="p-3 font-semibold">Estado</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-300">
+            <tr>
+              <td class="p-3 text-cyan-400 font-bold">MIGRATIONS_APPLIED</td>
+              <td class="p-3 text-slate-400">Supabase Cloud (PostgreSQL 17)</td>
+              <td class="p-3 text-emerald-400">9 TABLAS CREADAS</td>
+            </tr>
+            <tr>
+              <td class="p-3 text-cyan-400 font-bold">AI_ANALYSIS_COMPLETED</td>
+              <td class="p-3 text-slate-400">sony0908/alianapp</td>
+              <td class="p-3 text-emerald-400">CONFIDENCE 0.96</td>
+            </tr>
+            <tr>
+              <td class="p-3 text-cyan-400 font-bold">GITHUB_READ_CONNECTED</td>
+              <td class="p-3 text-slate-400">sony0908</td>
+              <td class="p-3 text-emerald-400">14 REPOS AUTORIZADOS</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 3. BARRA INFERIOR MÓVIL (MOBILE DOCK)      -->
+  <!-- ========================================== -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-4 py-2 flex items-center justify-around z-50 text-[10px] font-mono">
+    <button onclick="selectTab('migrations')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 focus:text-emerald-400">
+      <span>🗄️</span>
+      <span>Base Datos</span>
+    </button>
+    <button onclick="selectTab('projects')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 focus:text-emerald-400">
+      <span>📁</span>
+      <span>Proyectos</span>
+    </button>
+    <button onclick="selectTab('analysis')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 focus:text-emerald-400">
+      <span>✨</span>
+      <span>Análisis IA</span>
+    </button>
+    <button onclick="selectTab('obsidian')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-emerald-400 focus:text-emerald-400">
+      <span>📓</span>
+      <span>Obsidian</span>
+    </button>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- 4. SCRIPT INTERACTIVO DE PESTAÑAS          -->
+  <!-- ========================================== -->
+  <script>
+    function selectTab(tabId) {
+      // 1. Ocultar todos los contenidos de pestaña
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(c => c.classList.remove('active'));
+
+      // 2. Mostrar la pestaña seleccionada
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.add('active');
+      }
+
+      // 3. Actualizar estilos visuales de los botones de navegación
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-emerald-600', 'text-white', 'font-bold', 'shadow-sm');
+        btn.classList.add('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-850');
+      });
+
+      const activeBtn = document.getElementById('nav-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-850');
+        activeBtn.classList.add('bg-emerald-600', 'text-white', 'font-bold', 'shadow-sm');
+      }
+
+      // Scroll suave hacia arriba en móviles al cambiar de pestaña
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
